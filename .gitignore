@@ -1,0 +1,56 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build output
+build/
+dist/
+.cache/
+target/
+**/target/
+
+# Environment / secrets
+.env
+.env.*
+**/.env
+**/.env.*
+!.env.example
+!**/.env.example
+
+# Wallet keypairs and private keys
+wallet-keypair.json
+*keypair*.json
+*.pem
+*.key
+*.p12
+id.json
+
+# Solana / Anchor local artifacts
+.anchor/
+test-ledger/
+
+# Runtime / local state
+used_bet_signatures.json
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+nul
+
+# Coverage
+coverage/
+
+# Temporary
+*.tmp
+*.temp
+# Local assistant config
+.claude/

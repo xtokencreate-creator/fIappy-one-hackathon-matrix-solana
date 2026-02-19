@@ -1,0 +1,117 @@
+.demo-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  pointer-events: none;
+  padding-top: max(12px, env(safe-area-inset-top));
+  padding-right: max(16px, env(safe-area-inset-right));
+  padding-bottom: max(22px, calc(env(safe-area-inset-bottom) + 22px));
+  padding-left: max(16px, env(safe-area-inset-left));
+}
+
+.demo-overlay__panel {
+  pointer-events: auto;
+  width: min(90vw, 600px);
+  max-width: 600px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 211, 90, 0.42);
+  background: linear-gradient(180deg, rgba(17, 17, 17, 0.95), rgba(8, 8, 8, 0.95));
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.52);
+  padding: 14px 14px 12px;
+}
+
+.demo-overlay__text {
+  color: #f2f2f2;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  font-size: clamp(14px, 2.2vw, 22px);
+  line-height: 1.3;
+  text-align: center;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.35);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.demo-overlay__actions {
+  margin-top: 14px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.demo-overlay__button {
+  min-height: 42px;
+  min-width: 112px;
+  border: 1px solid #815800;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #ffd860 0%, #ffc827 100%);
+  box-shadow: 0 3px 0 #815800;
+  color: #1b1b1b;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: clamp(14px, 2.6vw, 20px);
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  cursor: pointer;
+  pointer-events: auto;
+  padding: 8px 14px;
+}
+
+.demo-overlay__button:disabled {
+  opacity: 0.8;
+  cursor: default;
+}
+
+.demo-overlay__pointer {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 55;
+}
+
+.demo-overlay__finger {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 245, 190, 0.95);
+  background: rgba(255, 203, 61, 0.85);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
+  animation: demoFingerBob 0.8s ease-in-out infinite alternate;
+}
+
+.demo-overlay__pulse {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 214, 83, 0.75);
+  transform: translate(-50%, -50%);
+  animation: demoPulse 1.1s ease-out infinite;
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+  .demo-overlay {
+    align-items: flex-end;
+    padding-bottom: max(16px, calc(env(safe-area-inset-bottom) + 16px));
+  }
+
+  .demo-overlay__panel {
+    margin-top: 0;
+  }
+
+  .demo-overlay__text {
+    font-size: clamp(13px, 2vw, 18px);
+  }
+}
+
+@keyframes demoFingerBob {
+  from { transform: translateY(0); }
+  to { transform: translateY(-6px); }
+}
+
+@keyframes demoPulse {
+  from { opacity: 0.85; transform: translate(-50%, -50%) scale(0.72); }
+  to { opacity: 0; transform: translate(-50%, -50%) scale(1.2); }
+}

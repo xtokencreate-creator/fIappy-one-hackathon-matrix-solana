@@ -1,0 +1,1263 @@
+/* ============================================================================
+ * CRATE REVEAL SEQUENCE STYLES
+ * ============================================================================
+ * Valve-style industrial crate with high-impact animations.
+ * Heavy shipping crate aesthetic with FLAPPY ONE branding.
+ * ============================================================================ */
+
+/* Valve-style easing curves */
+:root {
+  --ease-gravity: cubic-bezier(0.55, 0, 1, 0.45);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-snap: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --ease-heavy-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-explosive: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Crate colors - weathered wood */
+  --crate-light: #7a6a5a;
+  --crate-mid: #5a4a3a;
+  --crate-dark: #3a2a1a;
+  --crate-shadow: #1a0a00;
+  --metal-light: #8a8a8a;
+  --metal-mid: #5a5a5a;
+  --metal-dark: #3a3a3a;
+}
+
+/* ============================================================================
+ * BACKDROP & SCREEN SHAKE
+ * ============================================================================ */
+
+.reveal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(180deg, #1a1a2e 0%, #0a0a14 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  overflow: hidden;
+}
+
+/* Screen shake effect */
+.reveal-backdrop--shake {
+  animation: screenShake 150ms ease-out;
+}
+
+@keyframes screenShake {
+  0%, 100% { transform: translate(0, 0); }
+  20% { transform: translate(-4px, 2px); }
+  40% { transform: translate(4px, -2px); }
+  60% { transform: translate(-3px, 1px); }
+  80% { transform: translate(3px, -1px); }
+}
+
+.reveal-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  width: 100%;
+  max-width: 500px;
+}
+
+.reveal-stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  width: 100%;
+}
+
+.reveal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  text-align: center;
+  width: 100%;
+}
+
+.reveal-opened-crate {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  width: 100%;
+}
+
+/* ============================================================================
+ * CRATE STAGE - Contains crate + shadow + dust
+ * ============================================================================ */
+
+.crate-stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.crate-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+/* ============================================================================
+ * INDUSTRIAL CRATE - Heavy Shipping Crate
+ * ============================================================================ */
+
+.crate {
+  width: 200px;
+  height: 200px;
+  position: relative;
+  cursor: pointer;
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+/* ============================================================================
+ * CRATE FALL ENTRANCE ANIMATION
+ * ============================================================================ */
+
+.crate--entrance-falling {
+  animation: crateFall 400ms var(--ease-gravity) forwards;
+}
+
+@keyframes crateFall {
+  0% {
+    transform: translateY(-400px) rotate(-5deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+}
+
+.crate--entrance-landed {
+  animation: crateLand 200ms var(--ease-bounce) forwards;
+}
+
+@keyframes crateLand {
+  0% {
+    transform: translateY(0) scaleY(1);
+  }
+  30% {
+    transform: translateY(5px) scaleY(0.95) scaleX(1.02);
+  }
+  100% {
+    transform: translateY(0) scaleY(1) scaleX(1);
+  }
+}
+
+/* Ground shadow during fall */
+.crate__shadow {
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  width: 180px;
+  height: 20px;
+  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.5) 0%, transparent 70%);
+  border-radius: 50%;
+  transform: translateX(-50%);
+  transition: all 400ms var(--ease-gravity);
+}
+
+.crate__shadow--falling {
+  width: 60px;
+  opacity: 0.3;
+}
+
+.crate__shadow--landed {
+  width: 200px;
+  opacity: 0.6;
+}
+
+/* ============================================================================
+ * CRATE BASE - Main Body Structure
+ * ============================================================================ */
+
+.crate__base {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    160deg,
+    var(--crate-light) 0%,
+    var(--crate-mid) 30%,
+    var(--crate-dark) 70%,
+    var(--crate-shadow) 100%
+  );
+  border: 4px solid var(--crate-shadow);
+  border-radius: 4px;
+  box-shadow:
+    inset 0 2px 8px rgba(255, 255, 255, 0.1),
+    inset 0 -4px 8px rgba(0, 0, 0, 0.4),
+    0 10px 0 var(--crate-shadow),
+    0 15px 30px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+}
+
+/* Wood grain texture */
+.crate__texture {
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0px,
+      rgba(0, 0, 0, 0.03) 1px,
+      transparent 2px,
+      transparent 6px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      rgba(255, 255, 255, 0.015) 1px,
+      transparent 2px,
+      transparent 15px
+    );
+  opacity: 0.9;
+}
+
+/* Horizontal metal reinforcement bands */
+.crate__band {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 16px;
+  background: linear-gradient(
+    180deg,
+    var(--metal-light) 0%,
+    var(--metal-mid) 30%,
+    var(--metal-dark) 70%,
+    #2a2a2a 100%
+  );
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 2px solid #1a1a1a;
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.1);
+}
+
+.crate__band--top {
+  top: 20%;
+}
+
+.crate__band--bottom {
+  bottom: 20%;
+}
+
+/* Vertical wood planks (subtle seams) */
+.crate__plank {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(0, 0, 0, 0.3) 20%,
+    rgba(0, 0, 0, 0.3) 80%,
+    transparent 100%
+  );
+}
+
+.crate__plank--1 { left: 25%; }
+.crate__plank--2 { left: 50%; }
+.crate__plank--3 { left: 75%; }
+
+/* ============================================================================
+ * FLAPPY ONE LOGO STAMP
+ * ============================================================================ */
+
+.crate__stamp {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-3deg);
+  z-index: 5;
+}
+
+.crate__stamp-border {
+  padding: 8px 16px;
+  border: 3px solid rgba(20, 15, 10, 0.7);
+  border-radius: 4px;
+  background: transparent;
+  /* Worn stamp effect */
+  box-shadow:
+    inset 0 0 0 1px rgba(20, 15, 10, 0.3),
+    0 0 8px rgba(0, 0, 0, 0.2);
+}
+
+.crate__stamp-text {
+  font-family: 'Press Start 2P', 'Courier New', monospace;
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  color: rgba(20, 15, 10, 0.75);
+  text-transform: uppercase;
+  /* Burned/printed effect */
+  text-shadow:
+    0 0 1px rgba(20, 15, 10, 0.5),
+    1px 1px 0 rgba(255, 255, 255, 0.05);
+  /* Slight wear */
+  filter: blur(0.3px);
+}
+
+/* ============================================================================
+ * CORNER BOLTS
+ * ============================================================================ */
+
+.crate__bolt {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background: radial-gradient(
+    circle at 35% 35%,
+    var(--metal-light) 0%,
+    var(--metal-mid) 40%,
+    var(--metal-dark) 70%,
+    #1a1a1a 100%
+  );
+  border-radius: 50%;
+  border: 1px solid #0a0a0a;
+  box-shadow:
+    inset 0 1px 3px rgba(255, 255, 255, 0.4),
+    0 2px 4px rgba(0, 0, 0, 0.5);
+  z-index: 10;
+}
+
+/* Phillips head screw pattern */
+.crate__bolt::before,
+.crate__bolt::after {
+  content: '';
+  position: absolute;
+  background: #1a1a1a;
+  border-radius: 1px;
+}
+
+.crate__bolt::before {
+  top: 50%;
+  left: 25%;
+  right: 25%;
+  height: 2px;
+  transform: translateY(-50%);
+}
+
+.crate__bolt::after {
+  top: 25%;
+  bottom: 25%;
+  left: 50%;
+  width: 2px;
+  transform: translateX(-50%);
+}
+
+.crate__bolt--tl { top: 10px; left: 10px; }
+.crate__bolt--tr { top: 10px; right: 10px; }
+.crate__bolt--bl { bottom: 10px; left: 10px; }
+.crate__bolt--br { bottom: 10px; right: 10px; }
+.crate__bolt--tm { top: calc(20% + 3px); left: 50%; transform: translateX(-50%); }
+.crate__bolt--bm { bottom: calc(20% + 3px); left: 50%; transform: translateX(-50%); }
+
+/* ============================================================================
+ * ANIMATED PANELS - For Explosive Opening
+ * ============================================================================ */
+
+.crate__lid {
+  position: absolute;
+  top: -6px;
+  left: -6px;
+  right: -6px;
+  height: 45px;
+  background: linear-gradient(
+    180deg,
+    var(--crate-light) 0%,
+    var(--crate-mid) 50%,
+    var(--crate-dark) 100%
+  );
+  border: 4px solid var(--crate-shadow);
+  border-radius: 4px 4px 0 0;
+  transform-origin: bottom center;
+  box-shadow:
+    inset 0 3px 6px rgba(255, 255, 255, 0.15),
+    0 -2px 8px rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: space-around;
+  padding: 8px 10px;
+  gap: 4px;
+}
+
+.crate__lid-plank {
+  flex: 1;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.1) 0%,
+    transparent 10%,
+    transparent 90%,
+    rgba(0, 0, 0, 0.1) 100%
+  );
+  border-radius: 2px;
+}
+
+.crate__panel {
+  position: absolute;
+  background: linear-gradient(
+    160deg,
+    var(--crate-light) 0%,
+    var(--crate-mid) 50%,
+    var(--crate-dark) 100%
+  );
+  border: 3px solid var(--crate-shadow);
+  opacity: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.crate__panel-grain {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0px,
+    rgba(0, 0, 0, 0.05) 1px,
+    transparent 2px,
+    transparent 8px
+  );
+}
+
+.crate__panel--front {
+  bottom: 0;
+  left: 5%;
+  right: 5%;
+  height: 55%;
+  transform-origin: bottom center;
+  border-radius: 0 0 4px 4px;
+}
+
+.crate__panel--left {
+  top: 15%;
+  left: -6px;
+  width: 40%;
+  height: 55%;
+  transform-origin: right center;
+}
+
+.crate__panel--right {
+  top: 15%;
+  right: -6px;
+  width: 40%;
+  height: 55%;
+  transform-origin: left center;
+}
+
+.crate__panel--back {
+  top: 5%;
+  left: 20%;
+  right: 20%;
+  height: 40%;
+  transform-origin: top center;
+}
+
+/* Flying bolts during explosion */
+.crate__flying-bolt {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: radial-gradient(
+    circle at 35% 35%,
+    var(--metal-light) 0%,
+    var(--metal-mid) 50%,
+    var(--metal-dark) 100%
+  );
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 20;
+}
+
+.crate__flying-bolt--1 { top: 30%; left: 20%; }
+.crate__flying-bolt--2 { top: 30%; right: 20%; }
+.crate__flying-bolt--3 { top: 60%; left: 30%; }
+.crate__flying-bolt--4 { top: 60%; right: 30%; }
+
+/* ============================================================================
+ * DUST PARTICLES - Landing Effect
+ * ============================================================================ */
+
+.dust-container {
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 250px;
+  height: 60px;
+  pointer-events: none;
+}
+
+.dust {
+  position: absolute;
+  bottom: 0;
+  width: 30px;
+  height: 30px;
+  background: radial-gradient(
+    circle,
+    rgba(150, 130, 110, 0.6) 0%,
+    rgba(150, 130, 110, 0.2) 50%,
+    transparent 70%
+  );
+  border-radius: 50%;
+  animation: dustPuff 600ms var(--ease-heavy-out) forwards;
+}
+
+.dust--1 { left: 10%; animation-delay: 0ms; }
+.dust--2 { left: 25%; animation-delay: 30ms; }
+.dust--3 { left: 45%; animation-delay: 50ms; }
+.dust--4 { left: 55%; animation-delay: 40ms; }
+.dust--5 { left: 70%; animation-delay: 20ms; }
+.dust--6 { left: 85%; animation-delay: 60ms; }
+
+@keyframes dustPuff {
+  0% {
+    transform: translateY(0) scale(0.3);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-40px) scale(1.5);
+    opacity: 0;
+  }
+}
+
+/* ============================================================================
+ * CLICK PROMPT
+ * ============================================================================ */
+
+.crate-prompt {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 12px;
+  color: #ffd700;
+  text-shadow: 2px 2px 0 #000;
+  animation: promptPulse 1.5s ease-in-out infinite;
+  margin-top: 8px;
+}
+
+@keyframes promptPulse {
+  0%, 100% {
+    opacity: 0.6;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-4px);
+  }
+}
+
+/* Hover state when clickable */
+.crate--entrance-landed.crate--idle {
+  transition: transform 0.15s var(--ease-bounce);
+}
+
+.crate--entrance-landed.crate--idle:hover {
+  transform: scale(1.02) translateY(-2px);
+  cursor: pointer;
+}
+
+.crate--entrance-landed.crate--idle:active {
+  transform: scale(0.98);
+}
+
+/* ============================================================================
+ * ANTICIPATION ANIMATION - Shake + Scale
+ * ============================================================================ */
+
+.crate--anticipation {
+  animation: crateAnticipation 250ms ease-out forwards;
+}
+
+@keyframes crateAnticipation {
+  0% {
+    transform: translateX(0) scale(1);
+  }
+  15% {
+    transform: translateX(-6px) scale(1.02);
+  }
+  30% {
+    transform: translateX(6px) scale(1.03);
+  }
+  45% {
+    transform: translateX(-5px) scale(1.04);
+  }
+  60% {
+    transform: translateX(5px) scale(1.05);
+  }
+  75% {
+    transform: translateX(-3px) scale(1.05);
+  }
+  90% {
+    transform: translateX(3px) scale(1.06);
+  }
+  100% {
+    transform: translateX(0) scale(1.06);
+  }
+}
+
+/* ============================================================================
+ * EXPLOSION ANIMATION - Panels Burst Outward
+ * ============================================================================ */
+
+.crate--exploding {
+  animation: crateExplode 100ms ease-out forwards;
+}
+
+@keyframes crateExplode {
+  0% {
+    transform: scale(1.06);
+  }
+  100% {
+    transform: scale(1.08);
+  }
+}
+
+/* Lid explodes upward */
+.crate--exploding .crate__lid {
+  animation: lidExplode 500ms var(--ease-explosive) forwards;
+}
+
+@keyframes lidExplode {
+  0% {
+    transform: rotateX(0) translateY(0) translateZ(0);
+    opacity: 1;
+  }
+  30% {
+    transform: rotateX(-45deg) translateY(-60px) translateZ(30px);
+    opacity: 1;
+  }
+  100% {
+    transform: rotateX(-80deg) translateY(-150px) translateZ(50px) scale(0.7);
+    opacity: 0;
+  }
+}
+
+/* Front panel falls forward */
+.crate--exploding .crate__panel--front {
+  opacity: 1;
+  animation: panelFrontExplode 500ms 50ms var(--ease-explosive) forwards;
+}
+
+@keyframes panelFrontExplode {
+  0% {
+    transform: rotateX(0) translateY(0) translateZ(0);
+    opacity: 1;
+  }
+  100% {
+    transform: rotateX(70deg) translateY(80px) translateZ(40px);
+    opacity: 0;
+  }
+}
+
+/* Left panel flies left */
+.crate--exploding .crate__panel--left {
+  opacity: 1;
+  animation: panelLeftExplode 500ms 30ms var(--ease-explosive) forwards;
+}
+
+@keyframes panelLeftExplode {
+  0% {
+    transform: rotateY(0) translateX(0) translateZ(0);
+    opacity: 1;
+  }
+  100% {
+    transform: rotateY(-50deg) rotateZ(-15deg) translateX(-120px) translateZ(30px);
+    opacity: 0;
+  }
+}
+
+/* Right panel flies right */
+.crate--exploding .crate__panel--right {
+  opacity: 1;
+  animation: panelRightExplode 500ms 30ms var(--ease-explosive) forwards;
+}
+
+@keyframes panelRightExplode {
+  0% {
+    transform: rotateY(0) translateX(0) translateZ(0);
+    opacity: 1;
+  }
+  100% {
+    transform: rotateY(50deg) rotateZ(15deg) translateX(120px) translateZ(30px);
+    opacity: 0;
+  }
+}
+
+/* Back panel flies backward/up */
+.crate--exploding .crate__panel--back {
+  opacity: 1;
+  animation: panelBackExplode 500ms 80ms var(--ease-explosive) forwards;
+}
+
+@keyframes panelBackExplode {
+  0% {
+    transform: rotateX(0) translateY(0) translateZ(0);
+    opacity: 1;
+  }
+  100% {
+    transform: rotateX(-40deg) translateY(-100px) translateZ(-30px) scale(0.8);
+    opacity: 0;
+  }
+}
+
+/* Base fades and shrinks */
+.crate--exploding .crate__base {
+  animation: baseFadeExplode 400ms 100ms var(--ease-heavy-out) forwards;
+}
+
+@keyframes baseFadeExplode {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+}
+
+/* Flying bolts */
+.crate--exploding .crate__flying-bolt {
+  opacity: 1;
+  animation: boltFly 400ms var(--ease-snap) forwards;
+}
+
+.crate--exploding .crate__flying-bolt--1 {
+  animation-delay: 20ms;
+  --fly-x: -80px;
+  --fly-y: -60px;
+  --fly-rotate: -180deg;
+}
+
+.crate--exploding .crate__flying-bolt--2 {
+  animation-delay: 40ms;
+  --fly-x: 80px;
+  --fly-y: -70px;
+  --fly-rotate: 200deg;
+}
+
+.crate--exploding .crate__flying-bolt--3 {
+  animation-delay: 60ms;
+  --fly-x: -70px;
+  --fly-y: 50px;
+  --fly-rotate: -150deg;
+}
+
+.crate--exploding .crate__flying-bolt--4 {
+  animation-delay: 80ms;
+  --fly-x: 70px;
+  --fly-y: 60px;
+  --fly-rotate: 170deg;
+}
+
+@keyframes boltFly {
+  0% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+    opacity: 1;
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--fly-x), var(--fly-y)) rotate(var(--fly-rotate)) scale(0.5);
+    opacity: 0;
+  }
+}
+
+/* ============================================================================
+ * OPENED STATE - Everything Gone
+ * ============================================================================ */
+
+.crate--opened {
+  pointer-events: none;
+}
+
+.crate--opened .crate__base,
+.crate--opened .crate__lid,
+.crate--opened .crate__panel,
+.crate--opened .crate__flying-bolt {
+  opacity: 0;
+}
+
+/* ============================================================================
+ * REWARD DISPLAY
+ * ============================================================================ */
+
+.reward {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+}
+
+.reward--visible {
+  animation: rewardReveal 600ms var(--ease-bounce) forwards;
+  pointer-events: auto;
+  position: relative;
+  top: auto;
+  left: auto;
+  transform: none;
+}
+
+@keyframes rewardReveal {
+  0% {
+    opacity: 0;
+    transform: scale(0.3) rotate(-15deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.15) rotate(3deg);
+  }
+  70% {
+    transform: scale(0.95) rotate(-1deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+/* Glow effect */
+.reward__glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 250px;
+  height: 250px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(
+    circle,
+    rgba(255, 215, 0, 0.4) 0%,
+    rgba(255, 215, 0, 0.15) 40%,
+    transparent 70%
+  );
+  border-radius: 50%;
+  animation: glowPulse 2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.3);
+    opacity: 1;
+  }
+}
+
+/* Light rays effect */
+.reward__rays {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300px;
+  height: 300px;
+  transform: translate(-50%, -50%);
+  background:
+    repeating-conic-gradient(
+      from 0deg,
+      rgba(255, 215, 0, 0.1) 0deg 10deg,
+      transparent 10deg 20deg
+    );
+  border-radius: 50%;
+  animation: raysRotate 20s linear infinite;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+@keyframes raysRotate {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.reward__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Skin reward icon */
+.reward__icon {
+  width: 120px;
+  height: 120px;
+  background: linear-gradient(145deg, #ffd700 0%, #ff9500 100%);
+  border: 5px solid #000;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+  font-size: 60px;
+  box-shadow:
+    0 0 40px rgba(255, 215, 0, 0.6),
+    0 0 80px rgba(255, 150, 0, 0.3),
+    inset 0 3px 6px rgba(255, 255, 255, 0.4),
+    0 8px 0 #b36b00;
+}
+
+.reward__sprite {
+  width: 96px;
+  height: 96px;
+  display: block;
+  object-fit: contain;
+  object-position: center;
+  filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.35));
+}
+
+.reward__sprite--voucher {
+  image-rendering: auto;
+  border-radius: 10px;
+}
+
+.reward__name {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 18px;
+  color: #ffd700;
+  text-align: center;
+  text-shadow:
+    0 0 15px rgba(255, 215, 0, 0.7),
+    3px 3px 0 #000;
+}
+
+/* Credit reward - centered stack */
+.reward__credit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-align: center;
+  width: 100%;
+}
+
+.reward__credit-amount {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 36px;
+  color: #4ade80;
+  text-align: center;
+  text-shadow:
+    0 0 25px rgba(74, 222, 128, 0.7),
+    0 0 50px rgba(74, 222, 128, 0.4),
+    3px 3px 0 #000;
+  animation: creditPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes creditPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.reward__credit-label {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 16px;
+  color: #ffd700;
+  text-align: center;
+  text-shadow: 2px 2px 0 #000;
+}
+
+/* ============================================================================
+ * COUNTDOWN POPUP
+ * ============================================================================ */
+
+.countdown-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  backdrop-filter: blur(4px);
+}
+
+.countdown-popup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 40px 60px;
+  background: linear-gradient(180deg, #2a2a3e 0%, #1a1a2e 100%);
+  border: 3px solid #ffd700;
+  border-radius: 8px;
+  box-shadow:
+    0 0 30px rgba(255, 215, 0, 0.3),
+    0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.countdown-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 14px;
+  color: #ffd700;
+  text-align: center;
+  text-shadow: 2px 2px 0 #000;
+  letter-spacing: 2px;
+}
+
+.countdown-number {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 72px;
+  color: #fff;
+  text-shadow:
+    0 0 30px rgba(255, 255, 255, 0.5),
+    4px 4px 0 #000;
+  animation: countdownPulse 1s ease-in-out infinite;
+}
+
+@keyframes countdownPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.9;
+  }
+}
+
+/* ============================================================================
+ * NEXT BUTTON
+ * ============================================================================ */
+
+.reveal-btn {
+  min-width: 220px;
+  margin-top: 8px;
+  min-height: 52px;
+  padding: 14px 24px;
+  font-family: "Inter Bold", "Inter", "Segoe UI", Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  border-radius: 10px;
+  border: 1px solid #815800;
+  cursor: pointer;
+  transition: transform 120ms ease, filter 120ms ease, box-shadow 120ms ease, background 120ms ease;
+}
+
+.reveal-btn--gold {
+  color: #1b1b1b;
+  background: linear-gradient(180deg, #ffd860 0%, #ffc827 100%);
+  box-shadow: 0 5px 0 #815800, 0 12px 28px rgba(0, 0, 0, 0.35);
+}
+
+.reveal-btn--gold:hover {
+  background: linear-gradient(180deg, #ffe27a 0%, #ffd34a 100%);
+  transform: translateY(-1px);
+}
+
+.reveal-btn--gold:active {
+  transform: translateY(2px);
+  box-shadow: 0 3px 0 #815800, 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.reveal-mint-status {
+  min-height: 22px;
+  max-width: min(92vw, 460px);
+  padding: 0 8px;
+}
+
+.reveal-mint-status__ok,
+.reveal-mint-status__pending,
+.reveal-mint-status__error {
+  font-family: "Inter Bold", "Inter", "Segoe UI", Arial, sans-serif;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.reveal-mint-status__ok {
+  color: #4ade80;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+}
+
+.reveal-mint-status__pending {
+  color: #ffd700;
+  opacity: 0.95;
+}
+
+.reveal-mint-status__error {
+  color: #ff7d7d;
+}
+
+/* ============================================================================
+ * RESPONSIVE
+ * ============================================================================ */
+
+@media (max-width: 480px) {
+  .reveal-backdrop {
+    height: 100vh;
+    height: 100dvh;
+  }
+
+  .reveal-container {
+    padding: 24px 16px 32px;
+    max-height: 100dvh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .reveal-stage {
+    min-height: 320px;
+  }
+
+  .reveal-content {
+    gap: 20px;
+  }
+
+  .crate {
+    width: 160px;
+    height: 160px;
+  }
+
+  .crate__lid {
+    height: 36px;
+  }
+
+  .crate__bolt {
+    width: 12px;
+    height: 12px;
+  }
+
+  .crate__stamp-text {
+    font-size: 9px;
+    letter-spacing: 1px;
+  }
+
+  .crate__stamp-border {
+    padding: 6px 12px;
+  }
+
+  .reward__icon {
+    width: 100px;
+    height: 100px;
+    font-size: 50px;
+  }
+
+  .reward__sprite {
+    width: 76px;
+    height: 76px;
+  }
+
+  .reveal-btn {
+    width: min(88vw, 320px);
+    min-width: 0;
+    min-height: 48px;
+    font-size: 15px;
+    padding: 12px 18px;
+  }
+
+  .reward__name {
+    font-size: 14px;
+  }
+
+  .reward__credit-amount {
+    font-size: 28px;
+  }
+
+  .reward__credit-label {
+    font-size: 12px;
+  }
+
+  .crate-prompt {
+    font-size: 10px;
+  }
+
+  .countdown-popup {
+    padding: 30px 40px;
+  }
+
+  .countdown-title {
+    font-size: 11px;
+  }
+
+  .countdown-number {
+    font-size: 56px;
+  }
+
+  @keyframes crateFall {
+    0% {
+      transform: translateY(-300px) rotate(-5deg);
+      opacity: 0;
+    }
+    20% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(0) rotate(0deg);
+    }
+  }
+}
+
+/* ============================================================================
+ * REDUCED MOTION
+ * ============================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .crate--entrance-falling,
+  .crate--entrance-landed,
+  .crate--anticipation,
+  .crate--exploding,
+  .crate--exploding .crate__lid,
+  .crate--exploding .crate__panel,
+  .crate--exploding .crate__base,
+  .crate--exploding .crate__flying-bolt,
+  .reward--visible,
+  .reward__glow,
+  .reward__rays,
+  .reward__credit-amount,
+  .crate-prompt,
+  .dust,
+  .reveal-backdrop--shake,
+  .countdown-number {
+    animation: none !important;
+  }
+
+  .crate--entrance-falling {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .crate--exploding .crate__base,
+  .crate--exploding .crate__lid {
+    opacity: 0;
+  }
+
+  .reward--visible {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

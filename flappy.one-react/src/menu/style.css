@@ -1,0 +1,26 @@
+:root {
+  color-scheme: light;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background: #f3f3f3;
+  overflow: hidden;
+}
+
+body {
+  display: block;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+#menu-canvas {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+}

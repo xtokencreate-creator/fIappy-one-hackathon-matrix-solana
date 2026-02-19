@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flappy.one Risk Dashboard</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  background: #0a0a0a;
+  color: #e0e0e0;
+  min-height: 100vh;
+  padding: 20px;
+}
+h1 { color: #d4a017; font-size: 22px; margin-bottom: 6px; }
+h2 { color: #8fa4b8; font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin: 24px 0 10px; }
+.subtitle { color: #555; font-size: 12px; margin-bottom: 20px; }
+
+/* Stats bar */
+.stats-bar {
+  display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 24px;
+}
+.stat-card {
+  background: #161616; border: 1px solid #2a2a2a; border-radius: 10px;
+  padding: 14px 20px; min-width: 140px;
+}
+.stat-label { font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
+.stat-value { font-size: 28px; font-weight: 700; color: #fff; margin-top: 2px; }
+.stat-value.warn { color: #f59e0b; }
+.stat-value.danger { color: #ef4444; }
+.stat-value.safe { color: #4ade80; }
+
+/* Tables */
+.table-wrap { overflow-x: auto; margin-bottom: 24px; }
+table {
+  width: 100%; border-collapse: collapse; font-size: 13px;
+}
+thead th {
+  background: #161616; color: #8fa4b8; font-weight: 600; text-align: left;
+  padding: 8px 12px; border-bottom: 2px solid #2a2a2a; white-space: nowrap;
+  position: sticky; top: 0;
+}
+tbody td {
+  padding: 7px 12px; border-bottom: 1px solid #1a1a1a;
+}
+tbody tr:hover { background: #1a1a1a; }
+.row-safe { }
+.row-warn td { background: rgba(245, 158, 11, 0.06); }
+.row-danger td { background: rgba(239, 68, 68, 0.08); }
+.row-high td { background: rgba(239, 68, 68, 0.14); }
+
+/* Score badges */
+.score {
+  font-weight: 700; padding: 2px 8px; border-radius: 4px; display: inline-block; min-width: 50px; text-align: center;
+}
+.score-low { color: #4ade80; background: rgba(74,222,128,0.1); }
+.score-mid { color: #f59e0b; background: rgba(245,158,11,0.12); }
+.score-high { color: #ef4444; background: rgba(239,68,68,0.12); }
+
+/* Reason tags */
+.tag {
+  display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 10px;
+  font-weight: 600; margin: 1px 2px; letter-spacing: 0.3px;
+}
+.tag-NON_AGGRESSION { background: #7c3aed22; color: #a78bfa; border: 1px solid #7c3aed44; }
+.tag-FARM_LOOP { background: #ef444422; color: #fca5a5; border: 1px solid #ef444444; }
+.tag-DAMAGE_SYMMETRY { background: #f59e0b22; color: #fcd34d; border: 1px solid #f59e0b44; }
+.tag-REPEATED_PAIR { background: #3b82f622; color: #93c5fd; border: 1px solid #3b82f644; }
+.tag-STALKING { background: #ef444433; color: #fca5a5; border: 1px solid #ef444466; }
+.tag-FIRE_RATE_ANOMALY { background: #ef444422; color: #fca5a5; border: 1px solid #ef444444; }
+.tag-HIT_RATIO_ANOMALY { background: #f59e0b22; color: #fcd34d; border: 1px solid #f59e0b44; }
+.tag-AIM_STABILITY_ANOMALY { background: #7c3aed22; color: #a78bfa; border: 1px solid #7c3aed44; }
+.tag-SAME_DEVICE_TOKEN { background: #dc262622; color: #fca5a5; border: 1px solid #dc262644; }
+
+/* Action badges */
+.action { font-weight: 700; padding: 2px 8px; border-radius: 4px; font-size: 11px; }
+.action-allow { color: #4ade80; background: rgba(74,222,128,0.1); }
+.action-delay { color: #f59e0b; background: rgba(245,158,11,0.12); }
+.action-soft_hold { color: #ef4444; background: rgba(239,68,68,0.12); }
+
+/* Feature bars */
+.feat-bar {
+  display: inline-block; width: 60px; height: 6px; background: #2a2a2a; border-radius: 3px; vertical-align: middle; margin-right: 6px;
+}
+.feat-fill { height: 100%; border-radius: 3px; }
+.feat-fill-low { background: #4ade80; }
+.feat-fill-mid { background: #f59e0b; }
+.feat-fill-high { background: #ef4444; }
+
+/* Config section */
+.config-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px;
+}
+.config-item {
+  background: #161616; border: 1px solid #2a2a2a; border-radius: 6px;
+  padding: 8px 12px; font-size: 12px;
+}
+.config-key { color: #666; }
+.config-val { color: #d4a017; font-weight: 600; float: right; }
+
+/* Refresh indicator */
+.refresh-indicator {
+  position: fixed; top: 12px; right: 20px; font-size: 11px; color: #555;
+}
+.refresh-dot {
+  display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px;
+  background: #4ade80; animation: pulse 1s infinite;
+}
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+.empty-state { color: #444; font-size: 13px; padding: 20px; text-align: center; }
+.mono { font-family: 'SF Mono', monospace; font-size: 12px; color: #888; }
+.ts { color: #555; font-size: 11px; }
+</style>
+</head>
+<body>
+
+<h1>FLAPPY.ONE RISK DASHBOARD</h1>
+<div class="subtitle">Anti-collusion & anomaly detection monitoring | Auto-refreshes every 3s</div>
+
+<div class="refresh-indicator">
+  <span class="refresh-dot"></span>
+  <span id="lastUpdate">Loading...</span>
+</div>
+
+<!-- Stats bar -->
+<div class="stats-bar" id="statsBar"></div>
+
+<!-- Pairs -->
+<h2>Tracked Pairs</h2>
+<div class="table-wrap" id="pairsSection"></div>
+
+<!-- Players -->
+<h2>Player Anomaly Scores</h2>
+<div class="table-wrap" id="playersSection"></div>
+
+<!-- Cashout Decisions -->
+<h2>Recent Cashout Decisions</h2>
+<div class="table-wrap" id="cashoutSection"></div>
+
+<!-- Config -->
+<h2>System Config</h2>
+<div class="config-grid" id="configSection"></div>
+
+<script>
+const API = '/api/risk/dashboard';
+const REFRESH_MS = 3000;
+
+function scoreClass(s) {
+  if (s >= 0.7) return 'high';
+  if (s >= 0.4) return 'mid';
+  return 'low';
+}
+
+function rowClass(s) {
+  if (s >= 0.7) return 'row-high';
+  if (s >= 0.5) return 'row-danger';
+  if (s >= 0.3) return 'row-warn';
+  return 'row-safe';
+}
+
+function scoreBadge(s) {
+  return `<span class="score score-${scoreClass(s)}">${s.toFixed(3)}</span>`;
+}
+
+function tags(reasons) {
+  if (!reasons || reasons.length === 0) return '<span style="color:#333">-</span>';
+  return reasons.map(r => `<span class="tag tag-${r}">${r}</span>`).join(' ');
+}
+
+function featBar(val) {
+  const pct = Math.min(100, Math.round(val * 100));
+  const cls = val >= 0.7 ? 'high' : val >= 0.4 ? 'mid' : 'low';
+  return `<span class="feat-bar"><span class="feat-fill feat-fill-${cls}" style="width:${pct}%"></span></span>${val.toFixed(2)}`;
+}
+
+function timeAgo(ts) {
+  const s = Math.floor((Date.now() - ts) / 1000);
+  if (s < 5) return 'just now';
+  if (s < 60) return s + 's ago';
+  if (s < 3600) return Math.floor(s / 60) + 'm ago';
+  return Math.floor(s / 3600) + 'h ago';
+}
+
+function formatUptime(ms) {
+  const s = Math.floor(ms / 1000);
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  return h > 0 ? `${h}h ${m}m` : `${m}m`;
+}
+
+function render(data) {
+  // Stats bar
+  const flaggedPairs = data.pairs.filter(p => p.score >= 0.3).length;
+  const flaggedPlayers = data.players.filter(p => p.score >= 0.3).length;
+  document.getElementById('statsBar').innerHTML = `
+    <div class="stat-card"><div class="stat-label">Players Online</div><div class="stat-value">${data.activePlayerCount}</div></div>
+    <div class="stat-card"><div class="stat-label">Tracked Pairs</div><div class="stat-value">${data.activePairs}</div></div>
+    <div class="stat-card"><div class="stat-label">Flagged Pairs</div><div class="stat-value ${flaggedPairs > 0 ? 'warn' : 'safe'}">${flaggedPairs}</div></div>
+    <div class="stat-card"><div class="stat-label">Flagged Players</div><div class="stat-value ${flaggedPlayers > 0 ? 'danger' : 'safe'}">${flaggedPlayers}</div></div>
+    <div class="stat-card"><div class="stat-label">Engine</div><div class="stat-value" style="font-size:14px;color:#d4a017">${data.engine}</div></div>
+    <div class="stat-card"><div class="stat-label">Uptime</div><div class="stat-value" style="font-size:16px">${formatUptime(data.uptimeMs)}</div></div>
+  `;
+
+  // Pairs table
+  if (data.pairs.length === 0) {
+    document.getElementById('pairsSection').innerHTML = '<div class="empty-state">No tracked pairs yet. Players need to be alive and near each other.</div>';
+  } else {
+    document.getElementById('pairsSection').innerHTML = `<table>
+      <thead><tr>
+        <th>Player A</th><th>Player B</th><th>Score</th><th>Reasons</th>
+        <th>Prox</th><th>NonAgg</th><th>Farm</th><th>DmgSym</th>
+        <th>Enc/24h</th><th>Kills</th><th>Dmg</th><th>Active</th>
+      </tr></thead>
+      <tbody>${data.pairs.map(p => `<tr class="${rowClass(p.score)}">
+        <td class="mono">${p.walletA || p.playerA}</td>
+        <td class="mono">${p.walletB || p.playerB}</td>
+        <td>${scoreBadge(p.score)}</td>
+        <td>${tags(p.reasons)}</td>
+        <td>${featBar(p.features.proximity)}</td>
+        <td>${featBar(p.features.nonAggression)}</td>
+        <td>${featBar(p.features.farmLoop)}</td>
+        <td>${featBar(p.features.dmgSymmetry)}</td>
+        <td>${p.features.encounters24h}</td>
+        <td>${p.features.totalKills}</td>
+        <td>${p.features.totalDamage}</td>
+        <td class="ts">${timeAgo(p.lastActive)}</td>
+      </tr>`).join('')}</tbody>
+    </table>`;
+  }
+
+  // Players table
+  if (data.players.length === 0) {
+    document.getElementById('playersSection').innerHTML = '<div class="empty-state">No player anomaly data yet. Players need to fire shots.</div>';
+  } else {
+    document.getElementById('playersSection').innerHTML = `<table>
+      <thead><tr>
+        <th>Player</th><th>Score</th><th>Flags</th>
+        <th>Fire Rate</th><th>Hit Ratio</th><th>Aim Stab</th>
+        <th>Shots</th><th>Hits</th><th>Device</th>
+      </tr></thead>
+      <tbody>${data.players.map(p => `<tr class="${rowClass(p.score)}">
+        <td class="mono">${p.playerId}</td>
+        <td>${scoreBadge(p.score)}</td>
+        <td>${tags(p.flags)}</td>
+        <td>${featBar(p.fireRate)}</td>
+        <td>${featBar(p.hitRatio)}</td>
+        <td>${featBar(p.aimStability)}</td>
+        <td>${p.shots}</td>
+        <td>${p.hits}</td>
+        <td class="mono">${p.deviceTokenHash || '-'}</td>
+      </tr>`).join('')}</tbody>
+    </table>`;
+  }
+
+  // Cashout decisions
+  if (data.recentCashouts.length === 0) {
+    document.getElementById('cashoutSection').innerHTML = '<div class="empty-state">No cashout decisions recorded yet.</div>';
+  } else {
+    document.getElementById('cashoutSection').innerHTML = `<table>
+      <thead><tr>
+        <th>Time</th><th>Player</th><th>Action</th><th>Player Score</th><th>Pair Score</th><th>Reasons</th>
+      </tr></thead>
+      <tbody>${data.recentCashouts.map(c => `<tr>
+        <td class="ts">${timeAgo(c.ts)}</td>
+        <td class="mono">${c.playerId}</td>
+        <td><span class="action action-${c.action}">${c.action.toUpperCase()}</span></td>
+        <td>${scoreBadge(c.playerScore)}</td>
+        <td>${scoreBadge(c.maxPairScore)}</td>
+        <td>${tags(c.reasons)}</td>
+      </tr>`).join('')}</tbody>
+    </table>`;
+  }
+
+  // Config
+  if (data.config) {
+    const entries = Object.entries(data.config);
+    document.getElementById('configSection').innerHTML = entries.map(([k, v]) =>
+      `<div class="config-item"><span class="config-key">${k}</span><span class="config-val">${v}</span></div>`
+    ).join('');
+  }
+
+  document.getElementById('lastUpdate').textContent = 'Updated ' + new Date().toLocaleTimeString();
+}
+
+async function refresh() {
+  try {
+    const res = await fetch(API);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    render(data);
+  } catch (err) {
+    document.getElementById('lastUpdate').textContent = 'Error: ' + err.message;
+  }
+}
+
+refresh();
+setInterval(refresh, REFRESH_MS);
+</script>
+</body>
+</html>

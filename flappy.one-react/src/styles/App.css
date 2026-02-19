@@ -1,0 +1,412 @@
+.app {
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.game-layer-stack {
+  position: fixed;
+  inset: 0;
+  overflow: visible;
+  z-index: 1;
+}
+
+#game-root {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100dvh;
+  height: 100svh;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: #000;
+}
+
+.privy-login-box {
+  position: fixed;
+  top: calc(12px + env(safe-area-inset-top));
+  right: calc(12px + env(safe-area-inset-right));
+  z-index: 80;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #815800;
+  background: linear-gradient(180deg, #ffd860 0%, #ffc827 100%);
+  box-shadow: 0 4px 0 #815800;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  color: #1b1b1b;
+  cursor: pointer;
+}
+
+.privy-login-wrap {
+  position: fixed;
+  top: calc(12px + env(safe-area-inset-top));
+  right: calc(12px + env(safe-area-inset-right));
+  z-index: 80;
+}
+
+.privy-login-box--menu {
+  position: absolute;
+  top: 0;
+  right: auto;
+  font-size: clamp(10px, 2.6vw, 12px);
+  line-height: 1.1;
+}
+
+.privy-login-wrap .privy-login-box {
+  position: relative;
+  top: 0;
+  right: 0;
+}
+
+.privy-login-wrap--menu {
+  position: absolute;
+}
+
+.privy-login-gate {
+  margin-top: 8px;
+  display: grid;
+  gap: 8px;
+  width: 210px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 216, 96, 0.45);
+  background: rgba(12, 12, 12, 0.95);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
+}
+
+.privy-login-gate__btn {
+  border: 1px solid #815800;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #ffd860 0%, #ffc827 100%);
+  box-shadow: 0 3px 0 #815800;
+  padding: 8px 10px;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: #1b1b1b;
+  text-align: center;
+  cursor: pointer;
+}
+
+.privy-login-box:hover {
+  background: linear-gradient(180deg, #ffe27a 0%, #ffd34a 100%);
+}
+
+@media (max-width: 720px) {
+  .privy-login-box {
+    top: 8px;
+    right: 8px;
+    padding: 4px 8px;
+  }
+  .privy-login-wrap {
+    top: 8px;
+    right: 8px;
+  }
+}
+
+@media (max-width: 768px) and (orientation: portrait) {
+  .privy-login-box {
+    top: calc(10px + env(safe-area-inset-top) + 34px + 10px);
+    right: calc(12px + env(safe-area-inset-right));
+  }
+  .privy-login-wrap {
+    top: calc(10px + env(safe-area-inset-top) + 34px + 10px);
+    right: calc(12px + env(safe-area-inset-right));
+  }
+}
+
+.cashout-toast {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.cashout-toast--voucher {
+  pointer-events: auto;
+  animation: voucherToastIn 200ms ease-out;
+}
+
+.cashout-toast--wallet {
+  top: calc(84px + env(safe-area-inset-top));
+  right: calc(16px + env(safe-area-inset-right));
+  left: auto;
+  bottom: auto;
+}
+
+.cashout-toast--lobby {
+  right: calc(16px + env(safe-area-inset-right));
+  bottom: calc(16px + env(safe-area-inset-bottom));
+  left: auto;
+  top: auto;
+}
+.cashout-toast--tutorial {
+  right: calc(16px + env(safe-area-inset-right));
+  bottom: calc(16px + env(safe-area-inset-bottom));
+  left: auto;
+  top: auto;
+}
+
+.cashout-toast__button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  max-width: 340px;
+  min-width: 220px;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
+  padding: 10px 16px 10px 46px;
+  border-radius: 8px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  font-family: "Inter Bold", "Inter", "Segoe UI", Arial, sans-serif;
+  letter-spacing: 0.3px;
+}
+
+.cashout-toast__button--blue {
+  min-height: 44px;
+  background: #0088ff;
+  border: 2px solid #0075d6;
+}
+
+.cashout-toast__button--green {
+  min-height: 52px;
+  background: #27c840;
+  border: 2px solid #1ea334;
+}
+
+.cashout-toast__button--red {
+  min-height: 44px;
+  background: #c83737;
+  border: 2px solid #a12d2d;
+}
+.cashout-toast__button--tutorial {
+  min-height: 40px;
+  min-width: 0;
+  max-width: 280px;
+  padding: 8px 12px 8px 36px;
+  border-width: 1px;
+  border-color: #1ea334;
+  font-size: 12px;
+  letter-spacing: 0.2px;
+}
+.cashout-toast__button--tutorial .cashout-toast__icon {
+  left: 10px;
+  width: 16px;
+  height: 16px;
+  font-size: 10px;
+  border-width: 1px;
+}
+
+.cashout-toast__button--blue .cashout-toast__icon,
+.cashout-toast__button--green .cashout-toast__icon,
+.cashout-toast__button--red .cashout-toast__icon {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.cashout-toast__icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  border: 2px solid #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+/* icon alignment handled per button */
+
+.cashout-toast__text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  line-height: 1.1;
+  word-break: break-word;
+}
+
+.cashout-toast__text--green {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.cashout-toast__error {
+  background: rgba(0, 0, 0, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ff7c7c;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 12px;
+  line-height: 1.4;
+  width: 300px;
+}
+
+.cashout-toast__button--voucher {
+  min-width: 260px;
+  max-width: 360px;
+  align-items: flex-start;
+  padding-right: 36px;
+}
+
+.cashout-toast__link {
+  color: #fff;
+  text-decoration: underline;
+  font-weight: 700;
+  pointer-events: auto;
+}
+
+.cashout-toast__close {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  border: 0;
+  border-radius: 6px;
+  width: 20px;
+  height: 20px;
+  font-size: 12px;
+  line-height: 20px;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(0, 0, 0, 0.2);
+  pointer-events: auto;
+}
+
+@keyframes voucherToastIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 720px) {
+  .cashout-toast {
+    bottom: 12px;
+    left: 12px;
+  }
+  .cashout-toast--wallet {
+    top: calc(72px + env(safe-area-inset-top));
+    right: calc(12px + env(safe-area-inset-right));
+    left: auto;
+    bottom: auto;
+  }
+  .cashout-toast--lobby {
+    right: calc(12px + env(safe-area-inset-right));
+    bottom: calc(12px + env(safe-area-inset-bottom));
+    left: auto;
+    top: auto;
+  }
+  .cashout-toast--tutorial {
+    right: calc(12px + env(safe-area-inset-right));
+    bottom: calc(12px + env(safe-area-inset-bottom));
+  }
+}
+
+.join-overlay {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 220px;
+  padding: 12px 20px 12px 44px;
+  border-radius: 10px;
+  border: 2px solid #1ea334;
+  background: #27c840;
+  color: #f6fff8;
+  font-family: "Inter Bold", "Inter", "Segoe UI", Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  z-index: 120;
+  pointer-events: none;
+  animation: joinOverlayPulse 1.1s ease-in-out infinite;
+}
+
+.join-overlay::before {
+  content: "i";
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  border: 2px solid #ffffff;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 16px;
+  text-align: center;
+}
+
+@keyframes joinOverlayPulse {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.02);
+  }
+}
+
+.privy-debug {
+  position: fixed;
+  top: calc(12px + env(safe-area-inset-top));
+  left: calc(12px + env(safe-area-inset-left));
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  font-size: 12px;
+  line-height: 1.4;
+  padding: 8px 10px;
+  border-radius: 8px;
+  pointer-events: none;
+  max-width: 60vw;
+}
+
+/* Privy modal visibility hardening */
+[data-privy-root],
+[data-privy-modal],
+[data-privy-overlay],
+.privy-root,
+.privy-modal {
+  z-index: 9999 !important;
+  pointer-events: auto !important;
+}

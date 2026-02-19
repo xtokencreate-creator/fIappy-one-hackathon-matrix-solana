@@ -1,0 +1,28 @@
+{
+  "name": "flappy-one",
+  "version": "2.1.0",
+  "description": "Flappy.one - Battle arena with betting mechanics",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "game",
+    "multiplayer",
+    "websocket",
+    "battle-arena",
+    "privy",
+    "solana"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@metaplex-foundation/js": "^0.20.1",
+    "@privy-io/server-auth": "^1.15.0",
+    "@solana/web3.js": "^1.95.5",
+    "bs58": "^5.0.0",
+    "dotenv": "^16.6.1",
+    "ws": "^8.14.2"
+  }
+}

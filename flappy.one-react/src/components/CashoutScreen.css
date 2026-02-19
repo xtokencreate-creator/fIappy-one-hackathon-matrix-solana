@@ -1,0 +1,208 @@
+.cashout-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  animation: fadeIn 0.3s ease;
+}
+
+.cashout-screen--mobile-landscape {
+  padding:
+    calc(env(safe-area-inset-top) + 8px)
+    calc(env(safe-area-inset-right) + 8px)
+    calc(env(safe-area-inset-bottom) + 14px)
+    calc(env(safe-area-inset-left) + 8px);
+  box-sizing: border-box;
+}
+
+.cashout-panel {
+  width: 420px;
+  max-width: 92vw;
+  background: #161616;
+  border: 1px solid #2a2a2a;
+  border-radius: 18px;
+  padding: 26px 26px 22px;
+  text-align: center;
+  color: #fff;
+  position: relative;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55);
+  font-family: "Inter Bold", "Inter", "Segoe UI", Arial, sans-serif;
+  font-weight: 700;
+  transform-origin: center center;
+}
+
+.cashout-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: #2a2a2a;
+  color: #bdbdbd;
+  font-size: 18px;
+  font-family: "Inter Bold", "Inter", "Segoe UI", Arial, sans-serif;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.cashout-badge {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  margin: 4px auto 10px;
+  background: #1b1b1b;
+  border: 2px solid #f0c323;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cashout-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: #f4c225;
+  margin-bottom: 6px;
+}
+
+.cashout-subtitle {
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: #8a8a8a;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.cashout-amount {
+  font-size: 34px;
+  font-weight: 700;
+  color: #00e676;
+  margin-bottom: 2px;
+}
+
+.cashout-amount-sol {
+  font-size: 13px;
+  color: #7e7e7e;
+  margin-bottom: 14px;
+}
+
+.cashout-divider {
+  height: 2px;
+  background: #2a2a2a;
+  border-radius: 999px;
+  margin: 14px 0 12px;
+}
+
+.cashout-stats {
+  display: grid;
+  grid-template-columns: 1fr 1px 1fr;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.cashout-stat-sep {
+  width: 1px;
+  height: 48px;
+  background: #2a2a2a;
+  justify-self: center;
+}
+
+.cashout-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.cashout-stat-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #232323;
+}
+
+.cashout-stat-icon--blue {
+  background: #3d3dff;
+}
+
+.cashout-stat-icon--red {
+  background: #ff2d2d;
+}
+
+.cashout-stat-value {
+  font-size: 14px;
+  font-weight: 700;
+  color: #d9d9d9;
+}
+
+.cashout-stat-label {
+  font-size: 11px;
+  color: #7f7f7f;
+}
+
+.cashout-payout-bar {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: #1f1f1f;
+  border: 1px solid #2f2f2f;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #d7d7d7;
+  margin-bottom: 14px;
+  font-weight: 700;
+}
+
+.cashout-payout-usd {
+  color: #f4c225;
+  font-weight: 700;
+}
+
+.cashout-payout-sol {
+  color: #d7d7d7;
+}
+
+.cashout-payout-updating {
+  color: #a7a7a7;
+}
+
+.cashout-actions {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr 1fr;
+  gap: 10px;
+}
+
+.cashout-btn {
+  height: 44px;
+  border-radius: 10px;
+  border: 2px solid #3a3a3a;
+  background: #242424;
+  color: #d9d9d9;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.3px;
+}
+
+.cashout-btn--primary {
+  background: #f4c225;
+  border-color: #c59a16;
+  color: #1b1b1b;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
