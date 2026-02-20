@@ -1,5 +1,4 @@
 import React, { useState, useCallback, useEffect, useMemo, useRef } from 'react';
-import { createPortal } from 'react-dom';
 import { Connection, PublicKey, LAMPORTS_PER_SOL, SystemProgram, Transaction } from '@solana/web3.js';
 import bs58 from 'bs58';
 import { useGameState } from './hooks/useGameState';
@@ -13,6 +12,7 @@ import { usePrivy } from '@privy-io/react-auth';
 import { useWallets, useCreateWallet, useFundWallet } from '@privy-io/react-auth/solana';
 import { setWalletDisplay, setWalletActions, setMenuUsername, setUsernameListener, setUsernameCommitListener, setUsernameInvalidListener, setLeaderboardRows as setMenuLeaderboardRows, setSkinData, setSelectedSkin as setMenuSelectedSkin, setSkinSelectCallback, setSkinModalOpenCallback, setViewLeaderboardCallback, setMenuStats, setJoinEnabled } from './menu/main';
 import TopRightLoginBox from './components/TopRightLoginBox';
+import MobileAuthFloatingButton from './components/MobileAuthFloatingButton';
 import SocialOverlay from './components/SocialOverlay';
 import DemoOverlay from './components/DemoOverlay';
 import CrateRevealOverlay from './components/CrateRevealOverlay';
@@ -138,8 +138,6 @@ function App() {
   const [lastError, setLastError] = useState(null);
   const gameRootRef = useRef(null);
   const rendererRef = useRef(null);
-  const [menuOverlayRoot, setMenuOverlayRoot] = useState(null);
-  const [loginAnchor, setLoginAnchor] = useState(null);
   const [isMobilePortrait, setIsMobilePortrait] = useState(false);
   const [socialOpen, setSocialOpen] = useState(false);
   const [demoOverlayRect, setDemoOverlayRect] = useState(null);
@@ -883,14 +881,14 @@ function App() {
   }, [privyReady, privyAuthenticated, walletAddress, solanaRpc, refreshWalletBalance]);
 
   useEffect(() => {
-    const isAuthed = !!privyReady && !!privyAuthenticated;
+    const isAuthed = !!privyUiReady && !!privyUiAuthed;
     setWalletDisplay({
       usd: isAuthed ? walletBalanceUsd : 0,
       sol: isAuthed ? walletBalanceSol : 0,
       authenticated: isAuthed,
       address: walletAddress || '',
     });
-  }, [privyReady, privyAuthenticated, walletBalanceUsd, walletBalanceSol, walletAddress]);
+  }, [privyUiReady, privyUiAuthed, walletBalanceUsd, walletBalanceSol, walletAddress]);
 
   const handleAddFunds = useCallback(async () => {
     try {
@@ -1483,9 +1481,6 @@ function App() {
       menuVisible: view === 'lobby',
     });
     rendererRef.current = renderer;
-    if (renderer?.getMenuOverlayRoot) {
-      setMenuOverlayRoot(renderer.getMenuOverlayRoot());
-    }
     return () => renderer.destroy();
   }, []);
 
@@ -1570,29 +1565,6 @@ function App() {
 
   const showPortraitLoginButton = view === 'lobby' && isMobilePortrait && !privyUiAuthed;
 
-  useEffect(() => {
-    if (!showPortraitLoginButton) {
-      setLoginAnchor(null);
-      const renderer = rendererRef.current;
-      if (renderer?.setMenuOverlayRect) {
-        renderer.setMenuOverlayRect(null);
-      }
-      return;
-    }
-    const renderer = rendererRef.current;
-    if (!renderer?.getMenuLoginAnchor) return;
-    const update = () => setLoginAnchor(renderer.getMenuLoginAnchor());
-    update();
-    window.addEventListener('resize', update);
-    return () => window.removeEventListener('resize', update);
-  }, [showPortraitLoginButton]);
-
-  useEffect(() => {
-    const renderer = rendererRef.current;
-    if (!renderer?.setMenuOverlayRect) return;
-    renderer.setMenuOverlayRect(loginAnchor || null);
-  }, [loginAnchor]);
-
   const canvasVisible = gameScreen === 'demo' || gameScreen === 'game' || gameScreen === 'death' || gameScreen === 'cashout' || gameScreen === 'spectate';
   const canvasInteractive = gameScreen === 'demo' || gameScreen === 'game';
   const cameraMode = gameScreen === 'cashout' ? 'center' : gameScreen === 'spectate' ? 'spectate' : 'player';
@@ -1616,25 +1588,12 @@ function App() {
     <div className="app">
       <div id="game-root" ref={gameRootRef} />
       {view === 'lobby' && !isMobilePortrait && <TopRightLoginBox />}
+      {showPortraitLoginButton ? <MobileAuthFloatingButton /> : null}
       <SocialOverlay
         open={socialOpen && view === 'lobby'}
         onClose={() => setSocialOpen(false)}
         currentWalletAddress={walletAddress || ''}
       />
-      {showPortraitLoginButton && menuOverlayRoot && loginAnchor
-        ? createPortal(
-            <TopRightLoginBox
-              className="privy-login-box--menu"
-              style={{
-                left: `${Math.round(loginAnchor.x)}px`,
-                top: `${Math.round(loginAnchor.y)}px`,
-                width: `${Math.round(loginAnchor.w)}px`,
-                height: `${Math.round(loginAnchor.h)}px`,
-              }}
-            />,
-            menuOverlayRoot
-          )
-        : null}
 
       <div className="game-layer-stack" style={{ pointerEvents: canvasVisible || demoOverlayMounted ? 'auto' : 'none' }}>
         {/* Game Canvas - always rendered but hidden when not playing */}
