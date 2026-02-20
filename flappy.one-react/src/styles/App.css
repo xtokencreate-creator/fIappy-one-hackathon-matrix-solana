@@ -65,8 +65,20 @@ body,
   position: absolute;
   top: 0;
   right: auto;
-  font-size: clamp(10px, 2.6vw, 12px);
-  line-height: 1.1;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  box-sizing: border-box;
+  border-radius: 10px;
+  border: 2px solid #815800;
+  background: #ffc827;
+  box-shadow: 0 4px 0 #815800;
+  font-family: "Inter Bold", "Inter", "Segoe UI", Arial, sans-serif;
+  font-size: clamp(11px, 2.8vw, 13px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.5px;
+  color: #1b1b1b;
 }
 
 .privy-login-wrap .privy-login-box {
@@ -129,6 +141,10 @@ body,
   .privy-login-wrap {
     top: calc(10px + env(safe-area-inset-top) + 34px + 10px);
     right: calc(12px + env(safe-area-inset-right));
+  }
+  .privy-login-box--menu {
+    top: calc(0px + env(safe-area-inset-top));
+    right: calc(0px + env(safe-area-inset-right));
   }
 }
 

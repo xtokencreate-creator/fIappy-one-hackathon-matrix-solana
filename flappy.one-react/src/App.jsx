@@ -1085,13 +1085,22 @@ function App() {
     setCashoutToast({ stage: 'walletCopied', message: 'Wallet address copied' });
   }, [walletAddress]);
 
+  const handleMenuLogout = useCallback(async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.warn('Logout failed:', error?.message || error);
+    }
+  }, [logout]);
+
   useEffect(() => {
     setWalletActions({
       onAddFunds: handleAddFunds,
       onCopyAddress: handleCopyAddress,
       onCashOut: handleCashOutOpen,
+      onLogout: handleMenuLogout,
     });
-  }, [handleAddFunds, handleCopyAddress, handleCashOutOpen]);
+  }, [handleAddFunds, handleCopyAddress, handleCashOutOpen, handleMenuLogout]);
 
   // Get server ID based on bet and region
   const getServerId = useCallback((bet, region) => {
@@ -1559,8 +1568,10 @@ function App() {
     return () => window.removeEventListener('resize', update);
   }, []);
 
+  const showPortraitLoginButton = view === 'lobby' && isMobilePortrait && !privyUiAuthed;
+
   useEffect(() => {
-    if (!isMobilePortrait) {
+    if (!showPortraitLoginButton) {
       setLoginAnchor(null);
       const renderer = rendererRef.current;
       if (renderer?.setMenuOverlayRect) {
@@ -1574,7 +1585,7 @@ function App() {
     update();
     window.addEventListener('resize', update);
     return () => window.removeEventListener('resize', update);
-  }, [isMobilePortrait, view]);
+  }, [showPortraitLoginButton]);
 
   useEffect(() => {
     const renderer = rendererRef.current;
@@ -1610,7 +1621,7 @@ function App() {
         onClose={() => setSocialOpen(false)}
         currentWalletAddress={walletAddress || ''}
       />
-      {view === 'lobby' && isMobilePortrait && menuOverlayRoot && loginAnchor
+      {showPortraitLoginButton && menuOverlayRoot && loginAnchor
         ? createPortal(
             <TopRightLoginBox
               className="privy-login-box--menu"

@@ -214,6 +214,7 @@
       this.scrollMax = 0;
       this.isScrolling = false;
       this.lastPointerY = 0;
+      this.accountMenuOpen = false;
       this.layout = buildLayout();
       this.textMeasurer = document.createElement("canvas").getContext("2d");
       this.build();
@@ -415,7 +416,32 @@
         label: "",
         style: "gray",
         iconKey: "iconAccount",
-        onClick: () => console.log("account"),
+        onClick: () => {
+          if (!walletDisplay.authenticated) return;
+          this.accountMenuOpen = !this.accountMenuOpen;
+          this.applyTopRightControlsVisibility();
+        },
+      });
+
+      const logoutRect = L.logoutMenu || {
+        x: L.topIcons[2].x - Math.round(L.topIcons[2].w * 1.3),
+        y: L.topIcons[2].y + L.topIcons[2].h + 8,
+        w: Math.max(92, Math.round(L.topIcons[2].w * 2.2)),
+        h: Math.max(34, Math.round(L.topIcons[2].h * 0.9)),
+      };
+      this.addButton({
+        name: "top-logout",
+        ...logoutRect,
+        radius: 10,
+        label: "LOG OUT",
+        style: "gray",
+        onClick: () => {
+          this.accountMenuOpen = false;
+          this.applyTopRightControlsVisibility();
+          if (walletActions.onLogout) {
+            walletActions.onLogout();
+          }
+        },
       });
 
       this.welcomeBanner = new WelcomeBanner({
@@ -441,6 +467,7 @@
       });
 
       this.syncBetSelection();
+      this.applyTopRightControlsVisibility();
     }
 
     openSkinSelector() {
@@ -523,10 +550,14 @@
         const names = ["top-volume", "top-settings", "top-account"];
         applyRect(this.buttonMap.get(names[index]), rect);
       });
-      ["top-volume", "top-settings", "top-account"].forEach((name) => {
-        const btn = this.buttonMap.get(name);
-        if (btn) btn.visible = true;
-      });
+      const fallbackLogoutRect = {
+        x: nextLayout.topIcons[2].x - Math.round(nextLayout.topIcons[2].w * 1.3),
+        y: nextLayout.topIcons[2].y + nextLayout.topIcons[2].h + 8,
+        w: Math.max(92, Math.round(nextLayout.topIcons[2].w * 2.2)),
+        h: Math.max(34, Math.round(nextLayout.topIcons[2].h * 0.9)),
+      };
+      applyRect(this.buttonMap.get("top-logout"), nextLayout.logoutMenu || fallbackLogoutRect);
+      this.applyTopRightControlsVisibility();
       if (this.skinModal && typeof this.skinModal.resize === "function") {
         this.skinModal.resize();
       }
@@ -545,7 +576,25 @@
       });
     }
 
+    applyTopRightControlsVisibility() {
+      const portraitLoggedOut = layoutMode === "mobile-portrait" && !walletDisplay.authenticated;
+      const showIcons = !portraitLoggedOut;
+      ["top-volume", "top-settings", "top-account"].forEach((name) => {
+        const btn = this.buttonMap.get(name);
+        if (btn) btn.visible = showIcons;
+      });
+
+      if (!walletDisplay.authenticated) {
+        this.accountMenuOpen = false;
+      }
+      const logoutButton = this.buttonMap.get("top-logout");
+      if (logoutButton) {
+        logoutButton.visible = !!walletDisplay.authenticated && !!this.accountMenuOpen;
+      }
+    }
+
     update(timeMs) {
+      this.applyTopRightControlsVisibility();
       this.elements.forEach((element) => {
         if (typeof element.update === "function") {
           element.update(timeMs);
@@ -600,8 +649,15 @@
       }
 
       const yAdjusted = layoutMode === "mobile-portrait" ? y + this.scrollY : y;
+      const hitButton = this.buttons.find((button) => button.visible && button.containsPoint(x, yAdjusted));
+      if (
+        this.accountMenuOpen
+        && (!hitButton || (hitButton.name !== "top-account" && hitButton.name !== "top-logout"))
+      ) {
+        this.accountMenuOpen = false;
+        this.applyTopRightControlsVisibility();
+      }
       if (layoutMode === "mobile-portrait") {
-        const hitButton = this.buttons.find((button) => button.visible && button.containsPoint(x, yAdjusted));
         if (!hitButton) {
           this.isScrolling = true;
           this.lastPointerY = y;
@@ -614,7 +670,6 @@
       } else {
         this.inputFocused = false;
       }
-      const hitButton = this.buttons.find((button) => button.visible && button.containsPoint(x, yAdjusted));
       if (hitButton) {
         if (hitButton.disabled && hitButton.name !== "join-match") return;
         this.hoveredButton = hitButton;
@@ -1592,10 +1647,10 @@
           h: loginHeight,
         },
         loginAnchor: {
-          x: Math.round(DESIGN_WIDTH - (12 + safeInsets.right) - loginWidth),
-          y: iconsTop + headerMetrics.iconButtonSize + 10,
-          w: loginWidth,
-          h: loginHeight,
+          x: iconsLeft,
+          y: iconsTop,
+          w: iconsTotalW,
+          h: headerMetrics.iconButtonSize,
         },
       };
     }
@@ -2500,7 +2555,7 @@
   let onPlay = null;
   let onViewLeaderboard = null;
   let walletDisplay = { usd: null, sol: null, authenticated: false, address: "" };
-  let walletActions = { onAddFunds: null, onCopyAddress: null, onCashOut: null };
+  let walletActions = { onAddFunds: null, onCopyAddress: null, onCashOut: null, onLogout: null };
   let usernameListener = null;
   let usernameCommitListener = null;
   let usernameInvalidListener = null;
@@ -2557,11 +2612,12 @@
     };
   }
 
-  export function setWalletActions({ onAddFunds, onCopyAddress, onCashOut }) {
+  export function setWalletActions({ onAddFunds, onCopyAddress, onCashOut, onLogout }) {
     walletActions = {
       onAddFunds: typeof onAddFunds === "function" ? onAddFunds : null,
       onCopyAddress: typeof onCopyAddress === "function" ? onCopyAddress : null,
       onCashOut: typeof onCashOut === "function" ? onCashOut : null,
+      onLogout: typeof onLogout === "function" ? onLogout : null,
     };
   }
 
