@@ -13,6 +13,7 @@ import { useWallets, useCreateWallet, useFundWallet } from '@privy-io/react-auth
 import { setWalletDisplay, setWalletActions, setMenuUsername, setUsernameListener, setUsernameCommitListener, setUsernameInvalidListener, setLeaderboardRows as setMenuLeaderboardRows, setSkinData, setSelectedSkin as setMenuSelectedSkin, setSkinSelectCallback, setSkinModalOpenCallback, setViewLeaderboardCallback, setMenuStats, setJoinEnabled } from './menu/main';
 import TopRightLoginBox from './components/TopRightLoginBox';
 import MobileAuthFloatingButton from './components/MobileAuthFloatingButton';
+import MobileAuthLogoutPanel from './components/MobileAuthLogoutPanel';
 import SocialOverlay from './components/SocialOverlay';
 import DemoOverlay from './components/DemoOverlay';
 import CrateRevealOverlay from './components/CrateRevealOverlay';
@@ -1564,6 +1565,7 @@ function App() {
   }, []);
 
   const showPortraitLoginButton = view === 'lobby' && isMobilePortrait && !privyUiAuthed;
+  const showPortraitLogoutPanel = view === 'lobby' && isMobilePortrait && !!privyUiAuthed;
 
   const canvasVisible = gameScreen === 'demo' || gameScreen === 'game' || gameScreen === 'death' || gameScreen === 'cashout' || gameScreen === 'spectate';
   const canvasInteractive = gameScreen === 'demo' || gameScreen === 'game';
@@ -1589,6 +1591,7 @@ function App() {
       <div id="game-root" ref={gameRootRef} />
       {view === 'lobby' && !isMobilePortrait && <TopRightLoginBox />}
       {showPortraitLoginButton ? <MobileAuthFloatingButton /> : null}
+      {showPortraitLogoutPanel ? <MobileAuthLogoutPanel /> : null}
       <SocialOverlay
         open={socialOpen && view === 'lobby'}
         onClose={() => setSocialOpen(false)}

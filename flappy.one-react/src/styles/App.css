@@ -171,6 +171,33 @@ body,
   pointer-events: none;
 }
 
+.mobile-auth-logout-panel {
+  position: fixed;
+  top: calc(env(safe-area-inset-top) + 56px);
+  right: calc(env(safe-area-inset-right) + 10px);
+  z-index: 999998;
+  pointer-events: auto;
+}
+
+.mobile-auth-logout-btn {
+  min-width: 104px;
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid #4b4b4b;
+  background: #2c2c2c;
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.45);
+  color: #f4f4f4;
+  font-family: "Inter Bold", "Inter", "Segoe UI", Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.45px;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
 @media (max-width: 720px) {
   .privy-login-box {
     top: 8px;
@@ -187,6 +214,9 @@ body,
   .mobile-auth-floating-btn {
     display: inline-flex;
   }
+  .mobile-auth-logout-panel {
+    display: block;
+  }
   .privy-login-box {
     top: calc(10px + env(safe-area-inset-top) + 34px + 10px);
     right: calc(12px + env(safe-area-inset-right));
@@ -198,6 +228,12 @@ body,
   .privy-login-box--menu {
     top: calc(0px + env(safe-area-inset-top));
     right: calc(0px + env(safe-area-inset-right));
+  }
+}
+
+@media (min-width: 769px), (orientation: landscape) {
+  .mobile-auth-logout-panel {
+    display: none;
   }
 }
 
